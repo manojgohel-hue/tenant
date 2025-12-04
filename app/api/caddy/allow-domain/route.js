@@ -8,18 +8,18 @@
 const fakeTenantDomains = [
   {
     tenantSlug: "manoj",
-    customDomain: "manoj.nopass.xyz",
+    customDomain: "manoj.localhost",
     status: "active",
   },
   {
     tenantSlug: "devin",
-    customDomain: "devin.nopass.xyz",
+    customDomain: "devin.localhost",
     status: "active",
   },
 ];
 
 // Your platform domain, must match PLATFORM_DOMAIN in the shell script
-const PLATFORM_DOMAIN = "batball.xyz";
+const PLATFORM_DOMAIN = "localhost";
 
 function findCustomDomain(domain){
   return fakeTenantDomains.find(
@@ -30,24 +30,33 @@ function findCustomDomain(domain){
 }
 
 export async function GET(req) {
-  const { searchParams } = new URL(req.url);
-  const domain = searchParams.get("domain");
+  // Try to get domain from Host header first (most common case)
+  const host = req.headers.get("host") || "";
 
-  if (!domain) {
+  // Remove port if present (e.g., "example.com:3000" -> "example.com")
+  const domain = host.split(":")[0];
+  console.log("🚀💡💡💡💡💡=====> ~ GET ~ domain:", domain)
+
+  // Fallback: check query parameter if Host header doesn't have it
+  // (useful if Caddy calls this endpoint with domain as query param)
+  const domainFromQuery = new URL(req.url).searchParams.get("domain");
+  const finalDomain = domain || domainFromQuery;
+
+  if (!finalDomain) {
     return new Response("missing domain", { status: 400 });
   }
 
   // 1) Allow your main domain and subdomains always
   if (
-    domain === PLATFORM_DOMAIN ||
-    domain === `www.${PLATFORM_DOMAIN}` ||
-    domain.endsWith(`.${PLATFORM_DOMAIN}`)
+    finalDomain === PLATFORM_DOMAIN ||
+    finalDomain === `www.${PLATFORM_DOMAIN}` ||
+    finalDomain.endsWith(`.${PLATFORM_DOMAIN}`)
   ) {
     return new Response("ok", { status: 200 });
   }
 
   // 2) Allow any custom domain that is active in your DB
-  const record = findCustomDomain(domain);
+  const record = findCustomDomain(finalDomain);
 
   if (record) {
     return new Response("ok", { status: 200 });
