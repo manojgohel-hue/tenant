@@ -2,7 +2,7 @@
 
 function checkIfDomainIsInDatabase(domain) {
   // Example - replace with real database lookup
-  const allowedDomains = ["manoj.batball.xyz", "devin.batball.xyz","smartadsmanager.com"];
+  const allowedDomains = ["manoj.batball.xyz", "devin.batball.xyz","smartadsmanager.com","mybatball.com"];
   return allowedDomains.includes(domain);
 }
 
