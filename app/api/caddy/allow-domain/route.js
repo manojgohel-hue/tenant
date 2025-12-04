@@ -8,18 +8,18 @@
 const fakeTenantDomains = [
   {
     tenantSlug: "manoj",
-    customDomain: "manoj.localhost",
+    customDomain: "manoj.batball.xyz",
     status: "active",
   },
   {
     tenantSlug: "devin",
-    customDomain: "devin.localhost",
+    customDomain: "devin.batball.xyz",
     status: "active",
   },
 ];
 
 // Your platform domain, must match PLATFORM_DOMAIN in the shell script
-const PLATFORM_DOMAIN = "localhost";
+const PLATFORM_DOMAIN = "batball.xyz";
 
 function findCustomDomain(domain){
   return fakeTenantDomains.find(
