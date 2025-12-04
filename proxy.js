@@ -20,8 +20,8 @@ export function proxy(req) {
 
   // Subdomain tenant: manoj.batball.xyz → tenant=manoj
   if (host.endsWith(`.${PLATFORM_DOMAIN}`)) {
-    const subdomain = host.split(".")[0];
-    url.searchParams.set("tenant", subdomain);
+    const sub = host.split(".")[0];
+    url.searchParams.set("tenant", sub);
     return NextResponse.rewrite(url);
   }
 
