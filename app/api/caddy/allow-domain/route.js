@@ -1,5 +1,4 @@
 // app/api/caddy/allow-domain/route.ts
-import { NextRequest } from "next/server";
 
 /**
  * Replace these with real DB calls.
@@ -20,7 +19,7 @@ const fakeTenantDomains = [
 ];
 
 // Your platform domain, must match PLATFORM_DOMAIN in the shell script
-const PLATFORM_DOMAIN = "nopass.xyz";
+const PLATFORM_DOMAIN = "batball.xyz";
 
 function findCustomDomain(domain){
   return fakeTenantDomains.find(
