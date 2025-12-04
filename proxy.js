@@ -1,30 +1,33 @@
 // middleware.ts
 import { NextResponse } from "next/server";
 
-export function proxy(req, res) {
+const PLATFORM_DOMAIN = "batball.xyz";
+
+export function proxy(req) {
   const url = req.nextUrl;
   const host = req.headers.get("host") || "";
-  // e.g. blog.example.com → ["blog", "example", "com"]
-  const [subdomain] = host.split(".");
+  const pathname = url.pathname;
 
-  // Ignore localhost with ports, e.g. localhost:3000
-  if (host.startsWith("localhost")) {
+  // Ignore allow-domain API
+  if (pathname.startsWith("/api/caddy/allow-domain")) {
     return NextResponse.next();
   }
 
-  // Root domain (no subdomain or 'www')
-  if (subdomain === "www" || subdomain === "example") {
+  // Root domain
+  if (host === PLATFORM_DOMAIN || host === `www.${PLATFORM_DOMAIN}`) {
     return NextResponse.next();
   }
 
-  // Example: multi-tenant routing
-  // Attach it as a search param or header so app router can read it
-  url.searchParams.set("tenant", subdomain);
+  // Subdomain tenant: manoj.batball.xyz → tenant=manoj
+  if (host.endsWith(`.${PLATFORM_DOMAIN}`)) {
+    const subdomain = host.split(".")[0];
+    url.searchParams.set("tenant", subdomain);
+    return NextResponse.rewrite(url);
+  }
 
-  return NextResponse.rewrite(url);
+  return NextResponse.next();
 }
 
-// Only run middleware on pages you care about
 export const config = {
   matcher: ["/((?!_next/static|_next/image|favicon.ico).*)"],
 };
