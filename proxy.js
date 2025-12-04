@@ -6,6 +6,7 @@ export function proxy(req, res) {
   const host = req.headers.get("host") || "";
   // e.g. blog.example.com → ["blog", "example", "com"]
   const [subdomain] = host.split(".");
+  console.log("🚀💡💡💡💡💡=====> ~ proxy ~ subdomain:", subdomain)
 
   // Ignore localhost with ports, e.g. localhost:3000
   if (host.startsWith("localhost")) {
